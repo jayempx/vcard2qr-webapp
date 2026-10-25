@@ -55,6 +55,8 @@ jobs:
             sleep 2
           done
           curl --fail --silent -H 'X-Forwarded-Proto: https' http://127.0.0.1:8000/health/
+          curl --fail --silent -H 'X-Forwarded-Proto: https' http://127.0.0.1:8000/ > /dev/null
+          docker exec qr-smoke python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE','config.settings'); import django; django.setup(); from django.contrib.staticfiles.storage import staticfiles_storage as s; assert s.url('qrapp/app.js') != '/static/qrapp/app.js'"
           docker exec qr-smoke python manage.py check --deploy --fail-level WARNING
           docker exec qr-smoke python manage.py backup_data
           docker exec -e ALLOW_RESTORE_TEST=1 qr-smoke python scripts/restore_check.py

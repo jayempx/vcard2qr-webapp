@@ -15,3 +15,5 @@ Pre-flight: payload normalization feeds both static export and records; records 
 Ruling: local Docker daemon is unavailable; run lightweight tests locally and PostgreSQL/container integration on CI and the authorized server. Do not claim SQLite tests prove PostgreSQL concurrency.
 
 Review corrections: use database sessions so Lock revokes replayed cookies; preserve Wi-Fi credential whitespace; render batch output in cancellable chunks and retain binary exports for 24 hours with a 64 MiB batch cap; keep started import settings immutable and offer recovery/new import. Healthchecks always allow loopback. Audit historical paths, messages and account-only commit names as well as blob contents. Regression tests reproduced the first three failures before fixes.
+
+Production verification found missing static manifest: collectstatic had used development storage. Reproduced the failed static lookup, switched the build to production storage and added root-page/hashed-static checks to container CI.

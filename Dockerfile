@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir -r requirements.lock
 COPY --chown=app:app . .
 RUN mkdir -p /backups /app/staticfiles && chown -R app:app /backups /app/staticfiles
 USER app
-RUN SECRET_KEY=build-only-placeholder ACCESS_CODE=000000 LOCAL_TEST=1 DEBUG=1 python manage.py collectstatic --noinput --verbosity 0
+RUN SECRET_KEY=build-only-placeholder ACCESS_CODE=000000 PUBLIC_BASE_URL=https://qr.example.com LOCAL_TEST=1 DEBUG=0 python manage.py collectstatic --noinput --verbosity 0
 ARG SOURCE_REVISION=development
 ENV SOURCE_REVISION=$SOURCE_REVISION
 EXPOSE 8000
