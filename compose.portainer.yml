@@ -1,0 +1,76 @@
+x-release: "unreleased"
+x-environment: &environment
+  SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY privately}
+  ACCESS_CODE: ${ACCESS_CODE:?Set ACCESS_CODE privately}
+  PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?Set PUBLIC_BASE_URL privately}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS:?Set ALLOWED_HOSTS privately}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD privately}
+  POSTGRES_DB: qrstudio
+  POSTGRES_USER: qrstudio
+  DB_HOST: db
+  TRUST_PROXY: "1"
+  DEBUG: "0"
+services:
+  app:
+    build:
+      context: .
+      args:
+        SOURCE_REVISION: "unreleased"
+    image: qr-studio-web:production
+    pull_policy: never
+    restart: unless-stopped
+    environment: *environment
+    volumes: ["backups:/backups"]
+    networks:
+      internal:
+      proxy:
+        aliases: [qr-studio-app]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/',headers={'X-Forwarded-Proto':'https'}); urllib.request.urlopen(r,timeout=5)"]
+      interval: 20s
+      start_period: 90s
+      timeout: 6s
+      retries: 3
+    mem_limit: 768m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: qrstudio
+      POSTGRES_USER: qrstudio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD privately}
+    volumes: ["database:/var/lib/postgresql/data"]
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qrstudio -d qrstudio"]
+      interval: 5s
+      retries: 10
+    mem_limit: 512m
+  maintenance:
+    image: qr-studio-web:production
+    pull_policy: never
+    command: ["python", "manage.py", "maintenance", "--loop"]
+    restart: unless-stopped
+    environment: *environment
+    volumes: ["backups:/backups"]
+    networks: [internal]
+    depends_on:
+      app:
+        condition: service_healthy
+    mem_limit: 192m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+volumes:
+  database:
+  backups:
+networks:
+  internal:
+    internal: true
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:?Set PROXY_NETWORK privately}

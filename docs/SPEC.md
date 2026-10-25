@@ -41,6 +41,7 @@ The accepted visual direction uses cyan-to-blue gradient pill buttons, rounded i
 
 - Unlocked users only; vCard and website imports, static or persistent output.
 - .xlsx upload, worksheet selection, sample preview, editable column mapping, per-row validation, explicit confirmation and ZIP output plus report.
+- Download a ready-to-fill .xlsx template for the selected content type, with typed text phone/postcode columns, an example row and instructions.
 - Proposed technical limits: 5 MiB compressed workbook, 40 MiB expanded content, 500 data rows, 100 columns, 20 worksheets. Reject oversized input before processing. Reject formulas/error cells; preserve text phone numbers and warn about numeric phone cells.
 - Duplicate names never overwrite exports. Duplicate column mapping fails validation.
 - Work in bounded batches with progress and cancellation. Preserve completed results and make retries idempotent. Persistent valid rows also enter the shared library. Intentional reimport creates new codes, never updates existing ones silently.

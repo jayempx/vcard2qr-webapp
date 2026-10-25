@@ -96,7 +96,7 @@ def normalize_content(kind, data):
             continue
         if not isinstance(raw, str) or len(raw) > 4000:
             raise ContentError(key, "Use text up to 4,000 characters.")
-        value = raw.strip()
+        value = raw if kind == "wifi" and key in ("ssid", "password") else raw.strip()
         if any(ord(c) < 32 and (field_type != "textarea" or c not in "\r\n\t") for c in value):
             raise ContentError(key, "Remove control characters or line breaks.")
         if value and field_type == "url":

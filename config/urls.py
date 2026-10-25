@@ -1,7 +1,15 @@
 from django.urls import path
 from qrapp import destinations, views
+from qrapp import batch_views
 
 urlpatterns = [
+    path("api/imports/<str:id>/status/", batch_views.status),
+    path("api/imports/template/", batch_views.template),
+    path("api/imports/inspect/", batch_views.inspect),
+    path("api/imports/validate/", batch_views.validate),
+    path("api/imports/<str:id>/step/", batch_views.step),
+    path("api/imports/<str:id>/cancel/", batch_views.cancel),
+    path("api/imports/<str:id>/download/", batch_views.download),
     path("", views.app),
     path("health/", views.health),
     path("api/unlock/", views.unlock),

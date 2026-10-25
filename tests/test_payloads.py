@@ -9,6 +9,11 @@ from core.qr import render_export
 
 
 class PayloadTests(unittest.TestCase):
+    def test_wifi_preserves_credential_whitespace(self):
+        data = normalize_content("wifi", {"ssid": " Guest ", "password": " secret ", "security": "WPA"})
+        self.assertEqual(data["ssid"], " Guest ")
+        self.assertIn("P: secret ;", build_payload("wifi", data))
+
     def test_vcard_unicode_delimiters_and_folding(self):
         value = build_payload(
             "vcard",

@@ -9,6 +9,7 @@ if not re.fullmatch(r"[0-9]{6}", ACCESS_CODE):
     raise ValueError("ACCESS_CODE must be exactly six ASCII digits.")
 DEBUG = os.environ.get("DEBUG") == "1"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+ALLOWED_HOSTS = list(dict.fromkeys([*ALLOWED_HOSTS, "localhost", "127.0.0.1"]))
 PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "http://localhost:8098").rstrip("/")
 if not DEBUG and not PUBLIC_BASE_URL.startswith("https://"):
     raise ValueError("Production requires an HTTPS PUBLIC_BASE_URL.")
@@ -54,7 +55,7 @@ else:
             "CONN_MAX_AGE": 60,
         }
     }
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 86400
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = not DEBUG

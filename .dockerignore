@@ -1,0 +1,10 @@
+.git
+.env*
+__pycache__
+**/__pycache__
+*.pyc
+.ruff_cache
+staticfiles
+docs
+.superpowers
+*.sqlite3

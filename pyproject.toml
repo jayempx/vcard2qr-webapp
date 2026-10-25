@@ -5,3 +5,8 @@ exclude = ["staticfiles"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# Standalone entry points initialize Django before importing models/settings.
+"scripts/start.py" = ["E402"]
+"scripts/restore_check.py" = ["E402"]

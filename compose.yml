@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    ports: ["127.0.0.1:8098:8000"]
+    environment: &app-env
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY}
+      ACCESS_CODE: ${ACCESS_CODE:?Set a six-digit code}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8098}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DEBUG: "1"
+      POSTGRES_DB: qrstudio
+      POSTGRES_USER: qrstudio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set database password}
+      DB_HOST: db
+    volumes: ["backups:/backups"]
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: qrstudio
+      POSTGRES_USER: qrstudio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set database password}
+    volumes: ["database:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qrstudio -d qrstudio"]
+      interval: 5s
+      retries: 10
+volumes:
+  database:
+  backups:

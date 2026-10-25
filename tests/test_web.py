@@ -8,6 +8,15 @@ from qrapp.models import QRRecord
 
 @override_settings(ACCESS_CODE="012345", PUBLIC_BASE_URL="https://qr.example.com")
 class WebTests(TestCase):
+    def test_lock_revokes_copied_session_cookie(self):
+        self.unlock()
+        from django.conf import settings
+
+        replay = Client()
+        replay.cookies[settings.SESSION_COOKIE_NAME] = self.client.cookies[settings.SESSION_COOKIE_NAME].value
+        self.post("/api/lock/", {})
+        self.assertEqual(replay.get("/api/records/").status_code, 401)
+
     def post(self, url, data, client=None):
         return (client or self.client).post(url, data=json.dumps(data), content_type="application/json")
 
