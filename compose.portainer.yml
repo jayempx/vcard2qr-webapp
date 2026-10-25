@@ -1,4 +1,4 @@
-x-release: "2c55b99e244da3a5ed1357757b4561b6f4b3350b"
+x-release: "1ca08eb6da4bf5ea035971ef958344b1da65e871"
 x-environment: &environment
   SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY privately}
   ACCESS_CODE: ${ACCESS_CODE:?Set ACCESS_CODE privately}
@@ -13,9 +13,9 @@ x-environment: &environment
 services:
   app:
     build:
-      context: https://github.com/jayempx/vcard2qr-webapp.git#2c55b99e244da3a5ed1357757b4561b6f4b3350b
+      context: https://github.com/jayempx/vcard2qr-webapp.git#1ca08eb6da4bf5ea035971ef958344b1da65e871
       args:
-        SOURCE_REVISION: "2c55b99e244da3a5ed1357757b4561b6f4b3350b"
+        SOURCE_REVISION: "1ca08eb6da4bf5ea035971ef958344b1da65e871"
     image: qr-studio-web:production
     pull_policy: never
     restart: unless-stopped
