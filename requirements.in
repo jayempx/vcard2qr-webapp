@@ -1,0 +1,8 @@
+Django>=5.2.8,<5.3
+gunicorn>=23,<26
+whitenoise>=6.9,<7
+psycopg[binary]>=3.2,<4
+qrcode>=8.2,<9
+Pillow>=12,<13
+openpyxl>=3.1.5,<4
+defusedxml>=0.7.1,<1
