@@ -36,12 +36,24 @@ class Command(BaseCommand):
         )
         try:
             subprocess.run(
-                ["pg_dump", "--format=custom", "--no-owner", "--file", str(temp), db["NAME"]],
+                [
+                    "pg_dump",
+                    "--format=custom",
+                    "--no-owner",
+                    "--exclude-table-data=qrapp_importbatch",
+                    "--exclude-table-data=qrapp_batchoutput",
+                    "--exclude-table-data=qrapp_ratebucket",
+                    "--exclude-table-data=django_session",
+                    "--file",
+                    str(temp),
+                    db["NAME"],
+                ],
                 env=env,
                 check=True,
                 capture_output=True,
             )
             subprocess.run(["pg_restore", "--list", str(temp)], env=env, check=True, capture_output=True)
+            temp.chmod(0o600)
             temp.replace(directory / (name + ".dump"))
         except subprocess.CalledProcessError:
             raise CommandError("Database backup failed; deployment stopped.") from None

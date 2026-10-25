@@ -24,6 +24,8 @@ App startup backs up an existing PostgreSQL database before migrations. The main
 
 These are local backups on the same host. Off-host copies require a separate operator-configured destination and schedule; they are not implied by local backup success.
 
+Backup archives exclude temporary import/output, throttle and session table data, retaining their schema only. Expiring static import content must not become a persistent archive through backup retention.
+
 For recovery, stop writers, restore a selected archive into a NEW database, run the matching application revision, and verify identifiers/counts before switching the private database configuration. Preserve the original public base URL to keep printed links valid. Never run the isolated CI restore script against the production database.
 
 ## Operational checks
